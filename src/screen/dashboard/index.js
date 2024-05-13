@@ -1,74 +1,51 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
-import { View, StyleSheet, ImageBackground } from 'react-native';
-import { Appbar, Text, Surface, IconButton } from 'react-native-paper';
+import React, { useState } from 'react';
+import { View } from 'react-native';
+import BackgroundImageComponent from '../../components/BackgroundImageComponent';
+import SurfaceComponent from '../../components/SurfaceComponent';
+import AppbarComponent from '../../components/AppbarComponent';
+import AnimatedTitleComponent from '../../components/AnimatedTitleComponent';
+import globalStyles from '../../utils/globalStyle';
+import DialogComponent from '../../components/DialogComponent';
 
-export default function DashboardScreen() {
+export default function DashboardScreen({ navigation }) {
+  const [userName, setUserName] = useState('');
+
+  const handleSubmit = (name) => {
+    setUserName(name);
+  };
+  const navigateToGameScreen = (type) => {
+    navigation.navigate('Game', { name: userName, type: type });
+  };
+
   return (
-    <ImageBackground source={require('../../../asserts/background2.jpg')} style={styles.backgroundImage}>
-      <View style={styles.container}>
-        <Appbar.Header style={styles.appBar}>
-          <IconButton icon="account" color="#fff" size={35} onPress={() => console.log('Pressed user')} />
-          <Appbar.Content title="Ayush Pandey" titleStyle={styles.title} />
-          <IconButton icon="bell" color="#fff" size={35} onPress={() => console.log('Pressed user')} />
-        </Appbar.Header>
-        <Text style={styles.titleText}>Tic Tac Toe</Text>
-
-        <View style={styles.centerContent}>
-          <Surface style={styles.surface} elevation={4}>
-            <Text style={styles.surfaceText}>Play with Person</Text>
-          </Surface>
-          <Surface style={styles.surface} elevation={4}>
-            <Text style={styles.surfaceText}>Play with Computer</Text>
-          </Surface>
+    <BackgroundImageComponent>
+      <View style={globalStyles.flexContainer}>
+        <AppbarComponent userName={userName} />
+        <AnimatedTitleComponent title={'Tic Tac Toe'} />
+        <View style={globalStyles.container}>
+          <SurfaceComponent
+            onPress={() => navigateToGameScreen('user')}
+            text={'Play with friend'}
+            iconNameOne={'account-tie-hat'}
+            iconNameTwo={'account-tie-hat'}
+          />
+          <SurfaceComponent
+            onPress={()=>navigateToGameScreen('computer')}
+            text={'Play with Computer'}
+            iconNameOne={'account-tie-hat'}
+            iconNameTwo={'desktop-mac'}
+          />
         </View>
       </View>
-    </ImageBackground>
+      <DialogComponent
+        isVisible={userName == '' ? true : false}
+        title={'Add User Name'}
+        onSubmit={handleSubmit}
+        inputLabel={'Enter your name'}
+        buttonTitle={'Add Name'}
+        isInputView={true}
+      />
+    </BackgroundImageComponent>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  backgroundImage: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
-  appBar: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  titleText: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 20,
-  },
-  centerContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  surface: {
-    padding: 20,
-    height: 120,
-    width: '80%',
-    marginVertical: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  surfaceText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-});
